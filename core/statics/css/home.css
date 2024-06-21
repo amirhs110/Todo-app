@@ -1,0 +1,99 @@
+
+
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.hero h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1em;
+}
+
+.btn-signup {
+    background-color: #ff4444;
+}
+
+.btn-login {
+    background-color: #ff4444;
+}
+
+.about {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #1a1a1a;
+}
+
+.about-content,
+.quick-links {
+    flex: 1;
+}
+
+.about-content {
+    padding-right: 20px;
+}
+
+.quick-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.quick-links li {
+    margin-bottom: 10px;
+}
+
+.quick-links a {
+    text-decoration: none;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background-color: #1a1a1a;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .nav-links.show {
+        display: flex;
+    }
+
+    .hamburger {
+        display: block;
+    }
+
+    .about {
+        flex-direction: column;
+    }
+
+    .about-content {
+        padding-right: 0;
+        margin-bottom: 20px;
+    }
+}
