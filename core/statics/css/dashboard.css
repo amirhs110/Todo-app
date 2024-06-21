@@ -1,0 +1,64 @@
+.tasks {
+    padding: 20px;
+    text-align: center;
+}
+
+.tasks h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.task-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.task-card {
+    background-color: #1a1a1a;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: left;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.task-card h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.task-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.btn-check,
+.btn-edit,
+.btn-delete {
+    background-color: #ff4444;
+}
+
+.btn-create-task {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #ff4444;
+}
+
+
+@media (max-width: 768px) {
+    .task-container {
+        flex-direction: column;
+    }
+}

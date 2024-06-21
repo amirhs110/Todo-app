@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <main>
+        <section class="tasks">
+            <h2>Your Tasks</h2>
+            <div class="task-container">
+                <div class="task-card">
+                    <h3>Task 1</h3>
+                    <p>Description of Task 1.</p>
+                    <div class="task-buttons">
+                        <a href="#" class="btn btn-check">Check</a>
+                        <a href="#" class="btn btn-edit">Edit</a>
+                        <a href="#" class="btn btn-delete">Delete</a>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <h3>Task 2</h3>
+                    <p>Description of Task 2.</p>
+                    <div class="task-buttons">
+                        <a href="#" class="btn btn-check">Check</a>
+                        <a href="#" class="btn btn-edit">Edit</a>
+                        <a href="#" class="btn btn-delete">Delete</a>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <h3>Task 3</h3>
+                    <p>Description of Task 3.</p>
+                    <div class="task-buttons">
+                        <a href="#" class="btn btn-check">Check</a>
+                        <a href="#" class="btn btn-edit">Edit</a>
+                        <a href="#" class="btn btn-delete">Delete</a>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="btn btn-create-task">Create New Task</a>
+        </section>
+    </main>
+{% endblock %}
