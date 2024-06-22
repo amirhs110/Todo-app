@@ -77,6 +77,10 @@ form textarea {
     border-radius: 5px;
 }
 
+.sub-btn{
+    color: black;
+}
+
 .title-head {
     display: flex;
     padding: 15px 40px;

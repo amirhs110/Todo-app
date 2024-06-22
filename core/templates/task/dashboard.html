@@ -24,7 +24,7 @@
                                 <a href="#" class="btn btn-check">Done</a>
                             </div>    
                             <div>
-                                <a href="#" class="btn btn-edit" style="margin-right: 5px;">Edit</a>
+                                <a href="#" class="btn btn-edit" data-id="{{ task.id }}" data-title="{{ task.title }}" data-content="{{ task.content }}" style="margin-right: 5px;">Edit</a>
                                 <a href="#" class="btn btn-delete">Delete</a>
                             </div>
                         </div>
@@ -38,44 +38,92 @@
         </section>
     </main>
 
-
-    <div id="myModal" class="modal">
+    <!-- Create Task Modal -->
+    <div id="createModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <form id="taskForm" method="post" action="{% url 'task:task-create' %}">
+            <form id="createTaskForm" method="post" action="{% url 'task:create' %}">
                 {% csrf_token %}
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" required>
-                <label for="content">Content:</label>
-                <textarea id="content" name="content" required></textarea>
-                <button type="submit" style="color: black;">Add Task</button>
+                <label for="createTitle">Title</label>
+                <input type="text" id="createTitle" name="title" required>
+                <label for="createContent">Content</label>
+                <textarea id="createContent" name="content" required></textarea>
+                <button type="submit" class="btn sub-btn">Add Task</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="editTaskForm" method="post" action="">
+                {% csrf_token %}
+                <input type="hidden" id="editTaskId" name="id">
+                <label for="editTitle">Title</label>
+                <input type="text" id="editTitle" name="title" required>
+                <label for="editContent">Content</label>
+                <textarea id="editContent" name="content" required></textarea>
+                <button type="submit" class="btn sub-btn">Update Task</button>
             </form>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
-            var modal = document.getElementById("myModal");
-            var btn = document.getElementById("createTaskBtn");
-            var span = document.getElementsByClassName("close")[0];
+            var createModal = document.getElementById("createModal");
+            var editModal = document.getElementById("editModal");
 
-            btn.onclick = function() {
-                modal.style.display = "block";
+            var createBtn = document.getElementById("createTaskBtn");
+            var spanClose = document.getElementsByClassName("close");
+
+            var editTaskIdInput = document.getElementById("editTaskId");
+            var editTitleInput = document.getElementById("editTitle");
+            var editContentInput = document.getElementById("editContent");
+            var editTaskForm = document.getElementById("editTaskForm");
+
+            createBtn.onclick = function() {
+                createModal.style.display = "block";
             }
 
-            span.onclick = function() {
-                modal.style.display = "none";
-            }
-
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
+            for (let span of spanClose) {
+                span.onclick = function() {
+                    createModal.style.display = "none";
+                    editModal.style.display = "none";
                 }
             }
 
-            document.getElementById('taskForm').addEventListener('submit', function(e) {
-                // Modal will close automatically since we are submitting the form
-                modal.style.display = "none";
+            window.onclick = function(event) {
+                if (event.target == createModal) {
+                    createModal.style.display = "none";
+                }
+                if (event.target == editModal) {
+                    editModal.style.display = "none";
+                }
+            }
+
+            document.querySelectorAll('.btn-edit').forEach(button => {
+                button.addEventListener('click', function() {
+                    var taskId = this.getAttribute('data-id');
+                    var taskTitle = this.getAttribute('data-title');
+                    var taskContent = this.getAttribute('data-content');
+
+                    editTaskIdInput.value = taskId;
+                    editTitleInput.value = taskTitle;
+                    editContentInput.value = taskContent;
+
+                    editTaskForm.action = `{% url 'task:edit' pk=0 %}`.replace('0', taskId);
+
+                    editModal.style.display = "block";
+                });
+            });
+
+            document.getElementById('createTaskForm').addEventListener('submit', function(e) {
+                createModal.style.display = "none";
+            });
+
+            document.getElementById('editTaskForm').addEventListener('submit', function(e) {
+                editModal.style.display = "none";
             });
         });
     </script>
