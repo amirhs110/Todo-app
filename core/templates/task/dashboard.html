@@ -10,37 +10,31 @@
 {% block content %}
     <main>
         <section class="tasks">
-            <h2>Your Tasks</h2>
-            <div class="task-container">
-                <div class="task-card">
-                    <h3>Task 1</h3>
-                    <p>Description of Task 1.</p>
-                    <div class="task-buttons">
-                        <a href="#" class="btn btn-check">Check</a>
-                        <a href="#" class="btn btn-edit">Edit</a>
-                        <a href="#" class="btn btn-delete">Delete</a>
-                    </div>
-                </div>
-                <div class="task-card">
-                    <h3>Task 2</h3>
-                    <p>Description of Task 2.</p>
-                    <div class="task-buttons">
-                        <a href="#" class="btn btn-check">Check</a>
-                        <a href="#" class="btn btn-edit">Edit</a>
-                        <a href="#" class="btn btn-delete">Delete</a>
-                    </div>
-                </div>
-                <div class="task-card">
-                    <h3>Task 3</h3>
-                    <p>Description of Task 3.</p>
-                    <div class="task-buttons">
-                        <a href="#" class="btn btn-check">Check</a>
-                        <a href="#" class="btn btn-edit">Edit</a>
-                        <a href="#" class="btn btn-delete">Delete</a>
-                    </div>
-                </div>
+            <div class="title-head">
+                <h2>Your Tasks</h2>
+                <a href="#" class="btn btn-create-task">Create New Task</a>
             </div>
-            <a href="#" class="btn btn-create-task">Create New Task</a>
+            <div class="task-container">
+                {% for task in object_list %}
+                    <div class="task-card">
+                        <a href=""><h3>{{task.title}}</h3></a>
+                        <p>{{task.content|truncatewords:10|safe}}</p>
+                        <div class="task-buttons">
+                            <div>
+                                <a href="#" class="btn btn-check">Done</a>
+                            </div>    
+                            <div>
+                                <a href="#" class="btn btn-edit" style="margin-right: 5px;">Edit</a>
+                                <a href="#" class="btn btn-delete">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="task-card">
+                        <h3>No Tasks yet...</h3>
+                    </div>
+                {% endfor %}  
+            </div>
         </section>
     </main>
 {% endblock %}
