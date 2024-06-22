@@ -12,10 +12,15 @@
     <main>
         <section class="task-detail">
             <div class="task-card">
-                <h3>{{object.title}}</h3>
-                <p>{{object.content}}</p>
+                <h3><span class="sp-color">Title:</span> {{object.title}}</h3>
+                <p><span class="sp-color">Description:</span> {{object.content}}</p>
+                <p><span class="sp-color">Created Date:</span> {{object.created_date}}</p>
                 <div class="task-buttons">
-                    <a href="#" class="btn btn-check">Done</a>
+                    {% if object.complete %}
+                        <a href="{% url 'task:done' pk=object.id %}" class="btn btn-check">Undo</a>
+                    {% else %}
+                        <a href="{% url 'task:done' pk=object.id %}" class="btn btn-check">Done</a>
+                    {% endif %}
                     <a href="#" class="btn btn-edit">Edit</a>
                     <a href="#" class="btn btn-delete">Delete</a>
                 </div>

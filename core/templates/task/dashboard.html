@@ -17,11 +17,20 @@
             <div class="task-container">
                 {% for task in object_list %}
                     <div class="task-card">
-                        <a href="{% url 'task:detail' pk=task.id %}"><h3>{{task.title}}</h3></a>
-                        <p>{{task.content|truncatewords:10|safe}}</p>
+                        {% if task.complete %}
+                            <a href="{% url 'task:detail' pk=task.id %}"><h3 style="text-decoration: line-through;">{{task.title}}</h3></a>
+                            <p style="text-decoration: line-through;">{{task.content|truncatewords:10|safe}}</p>
+                        {% else %}
+                            <a href="{% url 'task:detail' pk=task.id %}"><h3>{{task.title}}</h3></a>
+                            <p>{{task.content|truncatewords:10|safe}}</p>
+                        {% endif %}
                         <div class="task-buttons">
                             <div>
-                                <a href="#" class="btn btn-check">Done</a>
+                                {% if task.complete %}
+                                    <a href="{% url 'task:done' pk=task.id %}" class="btn btn-check">Undo</a>
+                                {% else %}
+                                    <a href="{% url 'task:done' pk=task.id %}" class="btn btn-check">Done</a>
+                                {% endif %}
                             </div>    
                             <div>
                                 <a href="#" class="btn btn-edit" data-id="{{ task.id }}" data-title="{{ task.title }}" data-content="{{ task.content }}" style="margin-right: 5px;">Edit</a>

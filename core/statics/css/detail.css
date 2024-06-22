@@ -53,6 +53,10 @@
     background-color: #ff0000;
 }
 
+.sp-color{
+    color: #ff0000;
+}
+
 @media (max-width: 768px) {
     .nav-links {
         display: none;
