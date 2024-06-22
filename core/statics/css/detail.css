@@ -1,0 +1,80 @@
+
+.task-detail {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.task-card {
+    background-color: #1a1a1a;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    text-align: left;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.task-card h3 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.task-card p {
+    font-size: 1.2em;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.task-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.btn-check,
+.btn-edit,
+.btn-delete {
+    background-color: #ff4444;
+    transition: 0.3s;
+}
+
+.btn-check:hover,
+.btn-edit:hover,
+.btn-delete:hover {
+    background-color: #ff0000;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background-color: #1a1a1a;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .nav-links.show {
+        display: flex;
+    }
+
+    .hamburger {
+        display: block;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

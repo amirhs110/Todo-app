@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/detail.css' %}">
+{% endblock %}
+
+{% block title %}Task Details{% endblock %}
+
+{% block content %}
+
+    <main>
+        <section class="task-detail">
+            <div class="task-card">
+                <h3>{{object.title}}</h3>
+                <p>{{object.content}}</p>
+                <div class="task-buttons">
+                    <a href="#" class="btn btn-check">Done</a>
+                    <a href="#" class="btn btn-edit">Edit</a>
+                    <a href="#" class="btn btn-delete">Delete</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+{% endblock %}

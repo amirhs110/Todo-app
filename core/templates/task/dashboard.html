@@ -12,12 +12,12 @@
         <section class="tasks">
             <div class="title-head">
                 <h2>Your Tasks</h2>
-                <a href="#" class="btn btn-create-task">Create New Task</a>
+                <a href="#" id="createTaskBtn" class="btn btn-create-task">Create New Task</a>
             </div>
             <div class="task-container">
                 {% for task in object_list %}
                     <div class="task-card">
-                        <a href=""><h3>{{task.title}}</h3></a>
+                        <a href="{% url 'task:detail' pk=task.id %}"><h3>{{task.title}}</h3></a>
                         <p>{{task.content|truncatewords:10|safe}}</p>
                         <div class="task-buttons">
                             <div>
@@ -37,4 +37,46 @@
             </div>
         </section>
     </main>
+
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="taskForm" method="post" action="{% url 'task:task-create' %}">
+                {% csrf_token %}
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+                <label for="content">Content:</label>
+                <textarea id="content" name="content" required></textarea>
+                <button type="submit" style="color: black;">Add Task</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            var modal = document.getElementById("myModal");
+            var btn = document.getElementById("createTaskBtn");
+            var span = document.getElementsByClassName("close")[0];
+
+            btn.onclick = function() {
+                modal.style.display = "block";
+            }
+
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            document.getElementById('taskForm').addEventListener('submit', function(e) {
+                // Modal will close automatically since we are submitting the form
+                modal.style.display = "none";
+            });
+        });
+    </script>
 {% endblock %}
