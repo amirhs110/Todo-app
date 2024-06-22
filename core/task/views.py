@@ -37,10 +37,20 @@ class TaskEditView(UpdateView):
     fields=["title", 'content']
     success_url = reverse_lazy("task:dashboard")
 
+class TaskDetailEditView(UpdateView):
+    model = Task
+    fields=["title", 'content']
+    success_url = reverse_lazy("task:dashboard")
+
+    template_name = "task/update_task.html"
+
 class TaskDeleteView(DeleteView):
     model = Task
     success_url = reverse_lazy("task:dashboard")
 
+class TaskDetailDeleteView(DeleteView):
+    model = Task
+    success_url = reverse_lazy("task:dashboard")
 
 class TaskDoneView(View):
     model = Task

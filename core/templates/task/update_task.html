@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/edit_task.css' %}">
+{% endblock %}
+
+{% block title %}Edit Task{% endblock %}
+
+{% block content %}
+<main class="edit-main">
+    <div class="edit-container">
+        <h2>Edit Task</h2>
+        <form id="editTaskForm" method="post" action="">
+            {% csrf_token %}
+            <label for="editTitle">Title</label>
+            <input type="text" id="editTitle" name="title" value="{{ task.title }}" required>
+            <label for="editContent">Content</label>
+            <textarea id="editContent" name="content" required>{{ task.content }}</textarea>
+            <button type="submit" class="btn">Update Task</button>
+        </form>
+    </div>
+</main>
+{% endblock %}

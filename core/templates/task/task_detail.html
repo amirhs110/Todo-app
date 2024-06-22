@@ -21,8 +21,8 @@
                     {% else %}
                         <a href="{% url 'task:done' pk=object.id %}" class="btn btn-check">Done</a>
                     {% endif %}
-                    <a href="#" class="btn btn-edit">Edit</a>
-                    <a href="#" class="btn btn-delete">Delete</a>
+                    <a href="{% url 'task:detail-edit' pk=object.id %}" class="btn btn-edit">Edit</a>
+                    <a href="{% url 'task:detail-delete' pk=object.id %}" class="btn btn-delete">Delete</a>
                 </div>
             </div>
         </section>

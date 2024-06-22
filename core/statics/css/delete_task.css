@@ -1,0 +1,55 @@
+.delete-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.delete-container {
+    background-color: #2a2a2a;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.delete-container h2 {
+    margin-bottom: 20px;
+}
+
+.delete-container p {
+    margin-bottom: 20px;
+}
+
+.delete-container form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.delete-container .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff4444;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.delete-container .btn:hover {
+    background-color: #ff0000;
+}
+
+.delete-container .btn-cancel {
+    background-color: #777;
+    text-decoration: none;
+}
+
+.delete-container .btn-cancel:hover {
+    background-color: #555;
+}
