@@ -25,7 +25,7 @@
                             </div>    
                             <div>
                                 <a href="#" class="btn btn-edit" data-id="{{ task.id }}" data-title="{{ task.title }}" data-content="{{ task.content }}" style="margin-right: 5px;">Edit</a>
-                                <a href="#" class="btn btn-delete">Delete</a>
+                                <a href="#" class="btn btn-delete" data-id="{{ task.id }}">Delete</a>
                             </div>
                         </div>
                     </div>
@@ -69,10 +69,24 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Are you sure you want to delete this task?</p>
+            <form id="deleteTaskForm" method="post" action="">
+                {% csrf_token %}
+                <button type="submit" class="btn sub-btn">Confirm</button>
+                <button type="button" class="btn btn-cancel">Cancel</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             var createModal = document.getElementById("createModal");
             var editModal = document.getElementById("editModal");
+            var deleteModal = document.getElementById("deleteModal");
 
             var createBtn = document.getElementById("createTaskBtn");
             var spanClose = document.getElementsByClassName("close");
@@ -82,6 +96,9 @@
             var editContentInput = document.getElementById("editContent");
             var editTaskForm = document.getElementById("editTaskForm");
 
+            var deleteTaskForm = document.getElementById("deleteTaskForm");
+            var btnCancel = document.querySelector(".btn-cancel");
+
             createBtn.onclick = function() {
                 createModal.style.display = "block";
             }
@@ -90,6 +107,7 @@
                 span.onclick = function() {
                     createModal.style.display = "none";
                     editModal.style.display = "none";
+                    deleteModal.style.display = "none";
                 }
             }
 
@@ -99,6 +117,9 @@
                 }
                 if (event.target == editModal) {
                     editModal.style.display = "none";
+                }
+                if (event.target == deleteModal) {
+                    deleteModal.style.display = "none";
                 }
             }
 
@@ -118,12 +139,30 @@
                 });
             });
 
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    var taskId = this.getAttribute('data-id');
+
+                    deleteTaskForm.action = `{% url 'task:delete' pk=0 %}`.replace('0', taskId);
+
+                    deleteModal.style.display = "block";
+                });
+            });
+
+            btnCancel.onclick = function() {
+                deleteModal.style.display = "none";
+            }
+
             document.getElementById('createTaskForm').addEventListener('submit', function(e) {
                 createModal.style.display = "none";
             });
 
             document.getElementById('editTaskForm').addEventListener('submit', function(e) {
                 editModal.style.display = "none";
+            });
+
+            document.getElementById('deleteTaskForm').addEventListener('submit', function(e) {
+                deleteModal.style.display = "none";
             });
         });
     </script>

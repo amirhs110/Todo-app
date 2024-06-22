@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Task
 
 # Create your views here.
@@ -33,4 +33,8 @@ class TaskCreateView(CreateView):
 class TaskEditView(UpdateView):
     model = Task
     fields=["title", 'content']
+    success_url = reverse_lazy("task:dashboard")
+
+class TaskDeleteView(DeleteView):
+    model = Task
     success_url = reverse_lazy("task:dashboard")

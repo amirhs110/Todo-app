@@ -80,7 +80,13 @@ form textarea {
 .sub-btn{
     color: black;
 }
+.btn-cancel {
+    background-color: #777;
+}
 
+.btn-cancel:hover {
+    background-color: #555;
+}
 .title-head {
     display: flex;
     padding: 15px 40px;
