@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 # Create your models here.
 User = get_user_model()
@@ -14,3 +15,14 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def get_snippet(self):
+        return self.content[:5]
+    
+    def get_absolute_url(self):
+        return reverse("task:api-v1:task-detail", kwargs={"pk": self.pk})
+    
+    def get_task_url(self):
+        url = reverse("task:api-v1:task-detail", kwargs={"pk": self.pk})
+        url = "http://127.0.0.1:8000" + url
+        return url
