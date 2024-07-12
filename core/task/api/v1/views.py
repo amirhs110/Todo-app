@@ -1,6 +1,9 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
+from django.shortcuts import get_object_or_404
 from task.models import Task
 from .serializers import TaskSerializer
 
@@ -14,3 +17,14 @@ class TaskViewSets(ModelViewSet):
         user = self.request.user
         tasks = Task.objects.filter(user=user)
         return tasks
+    
+    @action(methods=['get'],detail=True)
+    def get_done(self,request,pk=None):
+        task = get_object_or_404(Task,pk=pk, user=request.user)
+        task.complete = True
+        task.save()
+        serializer = TaskSerializer(instance=task)
+        return Response({
+            'Status': 'Done',
+            'detail': serializer.data,
+        })
