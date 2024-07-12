@@ -13,7 +13,7 @@ from .paginations import TaskPagination
 
 
 class TaskViewSets(ModelViewSet):
-    queryset = Task.objects.all()
+    queryset = Task.objects.all().order_by('-created_date')
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = TaskPagination
@@ -24,16 +24,20 @@ class TaskViewSets(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        tasks = Task.objects.filter(user=user)
+        tasks = Task.objects.filter(user=user).order_by('-created_date')
         return tasks
     
     @action(methods=['get'],detail=True)
     def get_done(self,request,pk=None):
         task = get_object_or_404(Task,pk=pk, user=request.user)
-        task.complete = True
-        task.save()
-        serializer = TaskSerializer(instance=task)
+        if task.complete == False:
+            task.complete = True
+            task.save()
+            status = 'Done'
+        else:
+            status = 'Your task is already done.'
+        serializer = TaskSerializer(instance=task,context={'request': request})
         return Response({
-            'Status': 'Done',
+            'Status': status,
             'detail': serializer.data,
         })
