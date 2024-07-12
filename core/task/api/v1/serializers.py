@@ -19,3 +19,22 @@ class TaskSerializer(ModelSerializer):
     def get_abs_url(self,obj):
         request = self.context.get('request')
         return request.build_absolute_uri()
+
+    def to_representation(self, instance):
+        repo = super().to_representation(instance)
+        request = self.context.get('request')
+        
+        if request.parser_context.get('kwargs').get('pk'):
+            repo.pop('snippet')
+            repo.pop('task_url')
+        else:
+            repo.pop('content')
+            repo.pop('relative_url')
+            repo.pop('absolute_url')
+
+        repo['user'] = {
+            'first name': instance.user.first_name,
+            'last name' : instance.user.last_name,
+        }
+        return repo
+
