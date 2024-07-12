@@ -17,7 +17,11 @@ class Task(models.Model):
         return self.title
     
     def get_snippet(self):
-        return self.content[:5]
+        words = self.content.split()
+        snippet = ' '.join(words[:5])
+        if len(words) > 5:
+            snippet += '...'
+        return snippet    
     
     def get_absolute_url(self):
         return reverse("task:api-v1:task-detail", kwargs={"pk": self.pk})
