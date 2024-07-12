@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter,OrderingFilter
 
 
 from django.shortcuts import get_object_or_404
@@ -16,9 +17,10 @@ class TaskViewSets(ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = TaskPagination
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter]
     filterset_fields = ['complete']
-
+    search_fields = ['title', 'content']
+    ordering_fields = ['created_date']
 
     def get_queryset(self):
         user = self.request.user
