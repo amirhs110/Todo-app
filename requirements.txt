@@ -1,9 +1,13 @@
+# General Modules
 asgiref==3.8.1
 Django==4.2
 python-decouple==3.8
 sqlparse==0.5.0
 tzdata==2024.1
 djangorestframework
+
+# Third party modules
 markdown
 django-filter
 coreapi
+drf-yasg[validation]
