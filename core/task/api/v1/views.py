@@ -23,12 +23,33 @@ class TaskViewSets(ModelViewSet):
     ordering_fields = ['created_date']
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            """
+                when i run app and request to show swagger doc i see a type error:
+                TypeError: Field 'id' expected a number but got <django.contrib.auth.models.AnonymousUser object at 0x7f9351027a90>.    
+                view's TaskViewSets raised exception during schema generation; use getattr(self, 'swagger_fake_view', False) to detect and short-circuit this
+
+                The Type error is because drf_yasg is trying to generate the schema for your view and
+                it's running into issues when it encounters *AnonymousUser objects*.
+                The error message suggests that getattr(self, 'swagger_fake_view', False) can be used to detect and
+                short-circuit this during schema generation.
+            """
+            # Return an empty queryset when generating schema
+            return Task.objects.none()
+
         user = self.request.user
         tasks = Task.objects.filter(user=user).order_by('-created_date')
         return tasks
     
     @action(methods=['get'],detail=True)
     def get_done(self,request,pk=None):
+        if getattr(self, 'swagger_fake_view', False):
+            # Return a placeholder response when generating schema
+            return Response({
+                'Status': 'Done',
+                'detail': {}
+            })
+        
         task = get_object_or_404(Task,pk=pk, user=request.user)
         if task.complete == False:
             task.complete = True
