@@ -53,6 +53,15 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
 
+""" *** Drf_yasg
+        This exposes 4 endpoints:
+
+        A JSON view of your API specification at /swagger.json
+        A YAML view of your API specification at /swagger.yaml
+        A swagger-ui view of your API specification at /swagger/
+        A ReDoc view of your API specification at /redoc/
+"""
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
