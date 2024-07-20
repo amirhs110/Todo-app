@@ -19,7 +19,24 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.documentation import include_docs_urls
+from django.urls import re_path
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Todo App",
+      default_version='v1',
+      description="This is a project for advanced django course in Maktabkhooneh",
+      terms_of_service="https://www.google.com/policies/terms/",
+      contact=openapi.Contact(email="amir.sigari.110@gmail.com"),
+      license=openapi.License(name="MIT License"),
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
 
 
 urlpatterns = [
@@ -29,7 +46,21 @@ urlpatterns = [
     path('', include('task.urls')),
     path('api-auth/', include('rest_framework.urls')), # If you're intending to use the browsable API you'll probably also want to add REST framework's login and logout views.
     path('api-doc/' , include_docs_urls(title='Api Doc')),
+
+    # drf_yasg urls to show api document
+    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
+
+""" *** Drf_yasg
+        This exposes 4 endpoints:
+
+        A JSON view of your API specification at /swagger.json
+        A YAML view of your API specification at /swagger.yaml
+        A swagger-ui view of your API specification at /swagger/
+        A ReDoc view of your API specification at /redoc/
+"""
 
 
 if settings.DEBUG:
