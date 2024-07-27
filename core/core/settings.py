@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'accounts',
     'task',
     'drf_yasg',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -142,5 +143,13 @@ AUTH_USER_MODEL = "accounts.User"
 LOGIN_URL = "/accounts/login"
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema', # add for show doc api
+    # 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema', # add for show doc api
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Todo app API',
+    'DESCRIPTION': 'This is a Todo app project for Maktabkhooneh',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
