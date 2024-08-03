@@ -3,6 +3,7 @@ from ..views import (
     CustomObtainAuthToken,
     CustomDiscardAuthToken,
     CustomObtainJwtToken,
+    RegistrationApiView,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -27,6 +28,7 @@ urlpatterns = [
 
     # User Registration & Activation
         # registration
+    path('registration/', RegistrationApiView.as_view(), name='registration'),
         # activation
         # resend-activation
 

@@ -2,13 +2,17 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
-from accounts.models import Profile
+from accounts.models import Profile, User
+from rest_framework_simplejwt.tokens import RefreshToken
+from mail_templated import EmailMessage
 from .serializers import (
     CustomAuthTokenSerializer,
     CustomObtainJwtTokenSerializer,
+    RegistrationSerializer,
 )
 
  # Token Based Authentication Views
@@ -47,3 +51,41 @@ class CustomDiscardAuthToken(APIView):  # logout
 # Jwt (Json Web Token) Authentication Views
 class CustomObtainJwtToken(TokenObtainPairView):
     serializer_class = CustomObtainJwtTokenSerializer
+
+
+class RegistrationApiView(GenericAPIView):
+    serializer_class = RegistrationSerializer
+
+    def post(self,request):
+        # Create User object
+        serializer = RegistrationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # get required data
+        email = serializer.validated_data['email']
+        user_obj = User.objects.get(email=email)
+
+        # create appropriate data for response
+        data = {
+            'details': 'User created successfully.',
+            'email' : email,
+            'Note' : 'Verification Email sent. pls verify your account.'
+        }
+
+        # create jwt token for activation
+        token = self.get_tokens_for_user(user_obj)
+
+        # create message for send activation email
+        message = EmailMessage(
+            template_name='email/User_activation.tpl',
+            context={'user': user_obj, 'token':token},
+            from_email= 'admin@admin.com',
+            to=[email],
+        )
+        message.send()
+
+        
+    def get_tokens_for_user(user):
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)

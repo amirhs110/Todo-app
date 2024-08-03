@@ -2,8 +2,12 @@ from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import ValidationError
+from accounts.models import User , Profile
+from django.contrib.auth.password_validation import validate_password
+
 
 
 class CustomAuthTokenSerializer(serializers.Serializer):
@@ -30,9 +34,10 @@ class CustomAuthTokenSerializer(serializers.Serializer):
             user = authenticate(request=self.context.get('request'),
                                 username=username, password=password)
 
-            # The authenticate call simply returns None for is_active=False
-            # users. (Assuming the default ModelBackend authentication
-            # backend.)
+            if not user.is_verified:
+                msg = _('User is not verified.')
+                raise serializers.ValidationError(msg, code='authorization')
+        
             if not user:
                 msg = _('Unable to log in with provided credentials.')
                 raise serializers.ValidationError(msg, code='authorization')
@@ -59,3 +64,39 @@ class CustomObtainJwtTokenSerializer(TokenObtainPairSerializer):
         data["user_email"]= self.user.email
 
         return data
+    
+
+class RegistrationSerializer(ModelSerializer):
+    re_password = serializers.CharField(max_length=128,write_only=True,required=True)
+
+    class Meta:
+        model = User
+        fields = ('email', 'password', 're_password')
+    
+    def validate(self, attrs):
+        # get attributes
+        email = attrs.get('email')
+        password = attrs.get('password')
+        re_pass = attrs.get('re_password') 
+
+        # Check if email already exists
+        if User.objects.filter(email=email).exists():
+            msg = _("A user with this email already exists.")
+            raise serializers.ValidationError({'email': msg})
+
+        # Checking the similarity of two passwords
+        if password != re_pass:
+            msg = _("password doesn't match")
+            raise serializers.ValidationError({'error': msg })
+        
+        # check validation of entered password
+        try:
+            validate_password(password=password)
+        except ValidationError as e:
+            raise serializers.ValidationError({'password': list(e.messages)})
+        
+        return super().validate(attrs)
+    
+    def create(self, validated_data):
+        validated_data.pop('re_password')
+        return User.objects.create_user(**validated_data)

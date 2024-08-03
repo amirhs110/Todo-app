@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_yasg',
     'drf_spectacular',
+    'mail_templated',
 ]
 
 MIDDLEWARE = [

@@ -14,3 +14,4 @@ pillow
 drf-yasg[validation]
 drf-spectacular
 djangorestframework-simplejwt
+django-mail-templated
