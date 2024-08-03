@@ -1,12 +1,13 @@
 from django.urls import path, include
-from rest_framework.authtoken.views import ObtainAuthToken
+from ..views import CustomObtainAuthToken
+
 
 urlpatterns = [
     # Token Based Authentication
         # login
-    path('token-login/', ObtainAuthToken.as_view()),
-
+    path('token/login/', CustomObtainAuthToken.as_view()),
         # logout
+    path('token/logout/', CustomObtainAuthToken.as_view()),
 
     # Jwt (Json Web Token) authentication
         # create
