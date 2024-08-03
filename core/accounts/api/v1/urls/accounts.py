@@ -1,5 +1,8 @@
 from django.urls import path, include
-from ..views import CustomObtainAuthToken
+from ..views import (
+    CustomObtainAuthToken,
+    CustomDiscardAuthToken,
+)
 
 
 urlpatterns = [
@@ -7,7 +10,7 @@ urlpatterns = [
         # login
     path('token/login/', CustomObtainAuthToken.as_view()),
         # logout
-    path('token/logout/', CustomObtainAuthToken.as_view()),
+    path('token/logout/', CustomDiscardAuthToken.as_view()),
 
     # Jwt (Json Web Token) authentication
         # create
