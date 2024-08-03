@@ -23,7 +23,6 @@ class CustomObtainAuthToken(ObtainAuthToken):  # login
             {
                 'token': token.key,
                 'user_id': user.id,
-                'user': user.first_name +" "+ user.last_name,
                 'email': user.email
             }
         )

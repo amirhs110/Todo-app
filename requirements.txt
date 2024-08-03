@@ -10,6 +10,7 @@ djangorestframework
 markdown
 django-filter
 coreapi
+pillow
 drf-yasg[validation]
 drf-spectacular
 djangorestframework-simplejwt

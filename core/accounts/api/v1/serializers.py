@@ -48,9 +48,9 @@ class CustomObtainJwtTokenSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
         data = super().validate(attrs)
-        # if not self.user.is_verified:
-        #     msg = _('User is not verified.')
-        #     raise ValidationError(msg)
+        if not self.user.is_verified:
+            msg = _('User is not verified.')
+            raise ValidationError(msg)
         refresh = self.get_token(self.user)
 
         data["refresh"] = str(refresh)
