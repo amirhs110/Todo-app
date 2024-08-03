@@ -4,8 +4,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from .serializers import CustomAuthTokenSerializer
-
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import (
+    CustomAuthTokenSerializer,
+    CustomObtainJwtTokenSerializer,
+)
 
  # Token Based Authentication Views
 class CustomObtainAuthToken(ObtainAuthToken):  # login
@@ -36,3 +39,7 @@ class CustomDiscardAuthToken(APIView):  # logout
         }
         return Response(data)
 
+
+# Jwt (Json Web Token) Authentication Views
+class CustomObtainJwtToken(TokenObtainPairView):
+    serializer_class = CustomObtainJwtTokenSerializer
