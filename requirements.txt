@@ -12,3 +12,4 @@ django-filter
 coreapi
 drf-yasg[validation]
 drf-spectacular
+djangorestframework-simplejwt
