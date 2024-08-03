@@ -45,7 +45,6 @@ urlpatterns = [
     # path("accounts/", include('django.contrib.auth.urls')),
     path('accounts/', include('accounts.urls')),
     path('', include('task.urls')),
-    path('api-auth/', include('rest_framework.urls')), # If you're intending to use the browsable API you'll probably also want to add REST framework's login and logout views.
     path('api-doc/' , include_docs_urls(title='Api Doc')),
 
     # drf_yasg urls to show api document
