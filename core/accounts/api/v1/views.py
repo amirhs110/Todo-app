@@ -9,6 +9,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from accounts.models import Profile, User
 from rest_framework_simplejwt.tokens import RefreshToken
 from mail_templated import EmailMessage
+from django.shortcuts import get_object_or_404
 from .serializers import (
     CustomAuthTokenSerializer,
     CustomObtainJwtTokenSerializer,
@@ -64,7 +65,7 @@ class RegistrationApiView(GenericAPIView):
 
         # get required data
         email = serializer.validated_data['email']
-        user_obj = User.objects.get(email=email)
+        user_obj = get_object_or_404(User, email=email)
 
         # create appropriate data for response
         data = {
@@ -85,7 +86,9 @@ class RegistrationApiView(GenericAPIView):
         )
         message.send()
 
-        
-    def get_tokens_for_user(user):
+        return Response(data,status=status.HTTP_201_CREATED)
+
+
+    def get_tokens_for_user(self,user):
         refresh = RefreshToken.for_user(user)
         return str(refresh.access_token)
