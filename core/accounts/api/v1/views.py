@@ -10,11 +10,16 @@ from accounts.models import Profile, User
 from rest_framework_simplejwt.tokens import RefreshToken
 from mail_templated import EmailMessage
 from django.shortcuts import get_object_or_404
+from ..utils import EmailThreading
+import logging
 from .serializers import (
     CustomAuthTokenSerializer,
     CustomObtainJwtTokenSerializer,
     RegistrationSerializer,
 )
+
+logger = logging.getLogger(__name__)
+
 
  # Token Based Authentication Views
 class CustomObtainAuthToken(ObtainAuthToken):  # login
@@ -58,35 +63,43 @@ class RegistrationApiView(GenericAPIView):
     serializer_class = RegistrationSerializer
 
     def post(self,request):
-        # Create User object
-        serializer = RegistrationSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        try:
+            # Create User object
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
 
-        # get required data
-        email = serializer.validated_data['email']
-        user_obj = get_object_or_404(User, email=email)
+            # get required data
+            email = serializer.validated_data['email']
+            user_obj = get_object_or_404(User, email=email)
 
-        # create appropriate data for response
-        data = {
-            'details': 'User created successfully.',
-            'email' : email,
-            'Note' : 'Verification Email sent. pls verify your account.'
-        }
+            # create appropriate data for response
+            data = {
+                'details': 'User created successfully.',
+                'email' : email,
+                'note' : 'Verification Email sent. pls verify your account.'
+            }
 
-        # create jwt token for activation
-        token = self.get_tokens_for_user(user_obj)
+            # create jwt token for activation
+            token = self.get_tokens_for_user(user_obj)
 
-        # create message for send activation email
-        message = EmailMessage(
-            template_name='email/User_activation.tpl',
-            context={'user': user_obj, 'token':token},
-            from_email= 'admin@admin.com',
-            to=[email],
-        )
-        message.send()
+            # create message for send activation email
+            message = EmailMessage(
+                template_name='email/User_activation.tpl',
+                context={'user': user_obj, 'token':token},
+                from_email= 'admin@admin.com',
+                to=[email],
 
-        return Response(data,status=status.HTTP_201_CREATED)
+            )
+            
+            # send email by Threading
+            EmailThreading(message).start()
+            
+            return Response(data,status=status.HTTP_201_CREATED)
+        
+        except Exception as e:
+            logger.error(f"Registration failed: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
     def get_tokens_for_user(self,user):
