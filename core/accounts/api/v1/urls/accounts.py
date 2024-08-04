@@ -5,6 +5,7 @@ from ..views import (
     CustomObtainJwtToken,
     RegistrationApiView,
     ActivationUserConfirmApiView,
+    ActivationUserResendApiView,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -33,6 +34,7 @@ urlpatterns = [
         # activation
     path('activation/confirm/<str:token>', ActivationUserConfirmApiView.as_view(), name='activation-confirm'),
         # resend-activation
+    path('activation/resend', ActivationUserResendApiView.as_view(), name='activation-resend'),
 
     # Reset Password
         # reset

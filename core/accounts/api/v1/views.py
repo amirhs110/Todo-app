@@ -20,6 +20,7 @@ from .serializers import (
     CustomAuthTokenSerializer,
     CustomObtainJwtTokenSerializer,
     RegistrationSerializer,
+    ActivationResendSerializer,
 )
 from django.contrib.auth import get_user_model
 
@@ -170,3 +171,39 @@ class ActivationUserConfirmApiView(APIView):
             status=status.HTTP_200_OK
         )
         
+
+class ActivationUserResendApiView(GenericAPIView):
+    serializer_class = ActivationResendSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data['email']
+        user_obj = serializer.validated_data['user']
+
+        # create jwt token for activation
+        token = self.get_tokens_for_user(user_obj)
+
+        # create message for send activation email
+        message = EmailMessage(
+            template_name='email/User_activation.tpl',
+            context={'user': user_obj, 'token':token},
+            from_email= 'admin@admin.com',
+            to=[email],
+        )
+
+        # send email by Threading
+        EmailThreading(message).start()
+            
+        return Response(
+            {'details': 'Activation email has been resent successfully.'},
+            status=status.HTTP_200_OK
+        )
+    
+    def get_tokens_for_user(self,user):
+        """
+            Generate a JWT token for the given user.
+        """
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)

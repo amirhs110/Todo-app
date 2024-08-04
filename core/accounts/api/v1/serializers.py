@@ -100,3 +100,25 @@ class RegistrationSerializer(ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('re_password')
         return User.objects.create_user(**validated_data)
+    
+
+class ActivationResendSerializer(serializers.Serializer):
+    email = serializers.EmailField(write_only=True,required=True)
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+
+        try:
+            user_obj = User.objects.get(email=email)
+        except User.DoesNotExist:
+            msg = _("A user with this email does not exist.")
+            raise serializers.ValidationError({'error': msg})
+
+        if user_obj.is_verified:
+            msg = _("The user account has already been activated.")
+            raise serializers.ValidationError({'email': msg})
+        
+        attrs['user'] = user_obj
+
+        return super().validate(attrs)
+
