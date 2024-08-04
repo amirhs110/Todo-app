@@ -4,7 +4,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView , RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -21,6 +21,7 @@ from .serializers import (
     CustomObtainJwtTokenSerializer,
     RegistrationSerializer,
     ActivationResendSerializer,
+    ProfileSerializer,
 )
 from django.contrib.auth import get_user_model
 
@@ -28,6 +29,18 @@ User = get_user_model()
 
 logger = logging.getLogger(__name__)
 
+
+# Profile View
+class ProfileApiView(RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Profile.objects.all()
+
+    def get_object(self):
+        # Assuming each user should only have one profile
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset,user=self.request.user)
+        return obj
 
  # Token Based Authentication Views
 class CustomObtainAuthToken(ObtainAuthToken):  # login
@@ -207,3 +220,5 @@ class ActivationUserResendApiView(GenericAPIView):
         """
         refresh = RefreshToken.for_user(user)
         return str(refresh.access_token)
+
+

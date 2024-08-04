@@ -9,6 +9,13 @@ from accounts.models import User , Profile
 from django.contrib.auth.password_validation import validate_password
 
 
+class ProfileSerializer(ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['user', 'first_name', 'last_name', 'description', 'image']
+        read_only_fields = ['user']
+        
+
 
 class CustomAuthTokenSerializer(serializers.Serializer):
     email = serializers.CharField(
