@@ -60,6 +60,14 @@ class CustomObtainJwtToken(TokenObtainPairView):
 
 
 class RegistrationApiView(GenericAPIView):
+    """ API view for user registration.
+
+        This view handles the registration of a new user. It validates the incoming
+        registration data using the `RegistrationSerializer`, saves the new user,
+        generates a JWT token for the user, and sends an account verification email
+        in a separate thread.
+    """
+
     serializer_class = RegistrationSerializer
 
     def post(self,request):
@@ -103,5 +111,8 @@ class RegistrationApiView(GenericAPIView):
 
 
     def get_tokens_for_user(self,user):
+        """
+            Generate a JWT token for the given user.
+        """
         refresh = RefreshToken.for_user(user)
         return str(refresh.access_token)
