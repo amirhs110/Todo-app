@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -6,17 +8,22 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
-from accounts.models import Profile, User
+from accounts.models import Profile
 from rest_framework_simplejwt.tokens import RefreshToken
 from mail_templated import EmailMessage
 from django.shortcuts import get_object_or_404
 from ..utils import EmailThreading
 import logging
+import jwt
+from jwt.exceptions import ExpiredSignatureError, DecodeError
 from .serializers import (
     CustomAuthTokenSerializer,
     CustomObtainJwtTokenSerializer,
     RegistrationSerializer,
 )
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +66,7 @@ class CustomObtainJwtToken(TokenObtainPairView):
     serializer_class = CustomObtainJwtTokenSerializer
 
 
+# Registration and Activation User Account
 class RegistrationApiView(GenericAPIView):
     """ API view for user registration.
 
@@ -116,3 +124,49 @@ class RegistrationApiView(GenericAPIView):
         """
         refresh = RefreshToken.for_user(user)
         return str(refresh.access_token)
+    
+
+class ActivationUserConfirmApiView(APIView):
+    """
+    ActivationUserConfirmApiView handles the confirmation of user account activation through a token-based mechanism.
+    This view is designed to validate the activation token, activate the user account if not already activated,
+    and provide appropriate feedback to the user.
+    """
+
+    def get(self,request,token):
+        try:
+            token_detail = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        except ExpiredSignatureError:
+            return Response(
+                {'error': _('The activation link has expired. Please request a new activation link.')},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except DecodeError:
+            return Response(
+                {'error': _('The activation link is invalid. Please check the link and try again.')},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e:
+            return Response({'error': _('An unexpected error occurred. Please try again later.')}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_id = token_detail.get('user_id')
+
+        try:
+            user_obj = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response(
+                {'error': _('The user associated with this activation link does not exist.')}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if user_obj.is_verified:
+            return Response({'info': _('The user account has already been activated.')}, status=status.HTTP_200_OK)
+
+        user_obj.is_verified = True
+        user_obj.save()
+
+        return Response(
+            {'detail': _('Your account has been successfully activated. You can now log in.')}, 
+            status=status.HTTP_200_OK
+        )
+        
