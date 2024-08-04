@@ -40,6 +40,8 @@ class User(AbstractBaseUser,PermissionsMixin):
     is_verified = models.BooleanField(default=False)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    last_password_reset_request = models.DateTimeField(null=True, blank=True)
+
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

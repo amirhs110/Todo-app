@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -12,7 +13,7 @@ from accounts.models import Profile
 from rest_framework_simplejwt.tokens import RefreshToken
 from mail_templated import EmailMessage
 from django.shortcuts import get_object_or_404
-from ..utils import EmailThreading
+from ..utils import EmailThreading , generate_activation_token , generate_password_reset_token
 import logging
 import jwt
 from jwt.exceptions import ExpiredSignatureError, DecodeError
@@ -22,6 +23,8 @@ from .serializers import (
     RegistrationSerializer,
     ActivationResendSerializer,
     ProfileSerializer,
+    ResetPasswordSerializer,
+    ResetPasswordConfirmSerializer,
 )
 from django.contrib.auth import get_user_model
 
@@ -42,7 +45,8 @@ class ProfileApiView(RetrieveUpdateAPIView):
         obj = get_object_or_404(queryset,user=self.request.user)
         return obj
 
- # Token Based Authentication Views
+
+# Token Based Authentication Views
 class CustomObtainAuthToken(ObtainAuthToken):  # login
     serializer_class = CustomAuthTokenSerializer
 
@@ -63,7 +67,6 @@ class CustomObtainAuthToken(ObtainAuthToken):  # login
             }
         )
     
-
 class CustomDiscardAuthToken(APIView):  # logout
     permission_classes = [IsAuthenticated]
 
@@ -196,7 +199,7 @@ class ActivationUserResendApiView(GenericAPIView):
         user_obj = serializer.validated_data['user']
 
         # create jwt token for activation
-        token = self.get_tokens_for_user(user_obj)
+        token = generate_activation_token(user_obj)
 
         # create message for send activation email
         message = EmailMessage(
@@ -213,12 +216,43 @@ class ActivationUserResendApiView(GenericAPIView):
             {'details': 'Activation email has been resent successfully.'},
             status=status.HTTP_200_OK
         )
-    
-    def get_tokens_for_user(self,user):
-        """
-            Generate a JWT token for the given user.
-        """
-        refresh = RefreshToken.for_user(user)
-        return str(refresh.access_token)
 
 
+
+# Reset Password & Reset Password Confirmation
+class ResetPasswordApiView(GenericAPIView):
+    serializer_class = ResetPasswordSerializer
+
+    def post(self,request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data['email']
+        user_obj = serializer.validated_data['user']
+
+        user_obj.last_password_reset_request = timezone.now()
+        user_obj.save()
+
+        token = generate_password_reset_token(user_obj)
+
+        reset_url = f"{settings.FRONTEND_URL}/reset-password/confirm/{token}"
+
+        message = EmailMessage(
+            template_name='email/reset_password.tpl',
+            context={'user': user_obj, 'reset_url': reset_url },
+            from_email= 'admin@admin.com',
+            to=[email],
+        )
+
+        # send email by Threading
+        EmailThreading(message).start()
+            
+        return Response({'detail': 'Password reset email sent.'}, status=status.HTTP_200_OK)
+
+
+
+
+
+
+class ResetPasswordConfirmApiView(GenericAPIView):
+    pass

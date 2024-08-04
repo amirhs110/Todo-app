@@ -1,5 +1,7 @@
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
+from datetime import timedelta
+from django.utils import timezone
 
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
@@ -17,7 +19,7 @@ class ProfileSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         repo = super().to_representation(instance)
-                
+
         repo['user'] = {
             'user_id': instance.user.id,
             'email' : instance.user.email,
@@ -136,3 +138,32 @@ class ActivationResendSerializer(serializers.Serializer):
 
         return super().validate(attrs)
 
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(write_only=True,required=True)
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+
+        try:
+            user_obj = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError(_('A user with this email does not exist.'))
+
+        if not user_obj.is_verified:
+            msg = _("The user is not verified.")
+            raise serializers.ValidationError({'error': msg})
+        
+        # This approach ensures that users cannot flood the system with password reset requests.
+        cooldown_period = timedelta(minutes=10)  # cooldown period
+
+        if user_obj.last_password_reset_request and timezone.now() - user_obj.last_password_reset_request < cooldown_period:
+            raise serializers.ValidationError(_('You can only request a password reset once every 10 minutes.'))
+
+
+        attrs['user'] = user_obj
+        return super().validate(attrs)
+
+class ResetPasswordConfirmSerializer(serializers.Serializer):
+    pass
