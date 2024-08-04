@@ -14,8 +14,15 @@ class ProfileSerializer(ModelSerializer):
         model = Profile
         fields = ['user', 'first_name', 'last_name', 'description', 'image']
         read_only_fields = ['user']
-        
 
+    def to_representation(self, instance):
+        repo = super().to_representation(instance)
+                
+        repo['user'] = {
+            'user_id': instance.user.id,
+            'email' : instance.user.email,
+        }
+        return repo
 
 class CustomAuthTokenSerializer(serializers.Serializer):
     email = serializers.CharField(
