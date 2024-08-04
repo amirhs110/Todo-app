@@ -20,6 +20,7 @@ urlpatterns = [
         # logout
     path('token/logout/', CustomDiscardAuthToken.as_view(), name='token-logout'),
 
+
     # Jwt (Json Web Token) authentication
         # create
     path('jwt/create/', CustomObtainJwtToken.as_view(), name='jwt-create'),
@@ -28,13 +29,15 @@ urlpatterns = [
         # verify
     path('jwt/verify/', TokenVerifyView.as_view(), name='jwt_verify'),
 
+
     # User Registration & Activation
         # registration
     path('registration/', RegistrationApiView.as_view(), name='registration'),
         # activation
     path('activation/confirm/<str:token>', ActivationUserConfirmApiView.as_view(), name='activation-confirm'),
         # resend-activation
-    path('activation/resend', ActivationUserResendApiView.as_view(), name='activation-resend'),
+    path('activation/resend/', ActivationUserResendApiView.as_view(), name='activation-resend'),
+
 
     # Reset Password
         # reset
