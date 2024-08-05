@@ -230,12 +230,12 @@ class ResetPasswordApiView(GenericAPIView):
         email = serializer.validated_data['email']
         user_obj = serializer.validated_data['user']
 
+        token = generate_password_reset_token(user_obj)
+
         user_obj.last_password_reset_request = timezone.now()
         user_obj.save()
 
-        token = generate_password_reset_token(user_obj)
-
-        reset_url = f"{settings.FRONTEND_URL}/reset-password/confirm/{token}"
+        reset_url = f"{settings.FRONTEND_URL}/accounts/api/v1/reset-password/confirm/{token}"
 
         message = EmailMessage(
             template_name='email/reset_password.tpl',
@@ -251,8 +251,42 @@ class ResetPasswordApiView(GenericAPIView):
 
 
 
-
-
-
 class ResetPasswordConfirmApiView(GenericAPIView):
-    pass
+    serializer_class = ResetPasswordConfirmSerializer
+
+    def post(self, request, token):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        new_password = serializer.validated_data['new_password']
+
+        try:
+            token_detail = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        except ExpiredSignatureError:
+            return Response(
+                {'error': _('The Reset Password link has expired. Please request a new Reset password link.')},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except DecodeError:
+            return Response(
+                {'error': _('The Reset Password link is invalid. Please check the link and try again.')},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e:
+            return Response({'error': _('An unexpected error occurred. Please try again later.')}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user_id = token_detail.get('user_id')
+
+        try:
+            user_obj = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response(
+                {'error': _('The user associated with this activation link does not exist.')}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        user_obj.set_password(new_password)
+        user_obj.save()
+
+        return Response({'detail': 'Password has been reset successfully.'}, status=status.HTTP_200_OK)
+

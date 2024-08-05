@@ -166,4 +166,19 @@ class ResetPasswordSerializer(serializers.Serializer):
         return super().validate(attrs)
 
 class ResetPasswordConfirmSerializer(serializers.Serializer):
-    pass
+    new_password = serializers.CharField(write_only=True,required=True)
+    re_new_password = serializers.CharField(write_only=True,required=True)
+
+    def validate(self, attrs):
+        new_password = attrs.get('new_password')
+        re_new_password = attrs.get('re_new_password')
+    
+        if new_password != re_new_password:
+            raise serializers.ValidationError(_('Passwords do not match.'))
+
+        try:
+            validate_password(new_password)
+        except ValidationError as e:
+            raise serializers.ValidationError({'new_password': list(e.messages)})
+
+        return super().validate(attrs)
