@@ -13,10 +13,11 @@ from accounts.models import Profile
 from rest_framework_simplejwt.tokens import RefreshToken
 from mail_templated import EmailMessage
 from django.shortcuts import get_object_or_404
-from ..utils import EmailThreading , generate_activation_token , generate_password_reset_token
+from ..utils import EmailThreading
 import logging
 import jwt
 from jwt.exceptions import ExpiredSignatureError, DecodeError
+from ..jwt_utils import ShortLivedAccessToken , MediumLivedAccessToken , LongLivedAccessToken
 from .serializers import (
     CustomAuthTokenSerializer,
     CustomObtainJwtTokenSerializer,
@@ -114,7 +115,7 @@ class RegistrationApiView(GenericAPIView):
             }
 
             # create jwt token for activation
-            token = self.get_tokens_for_user(user_obj)
+            token = LongLivedAccessToken.for_user(user_obj)
 
             # create message for send activation email
             message = EmailMessage(
@@ -134,15 +135,7 @@ class RegistrationApiView(GenericAPIView):
             logger.error(f"Registration failed: {e}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-
-    def get_tokens_for_user(self,user):
-        """
-            Generate a JWT token for the given user.
-        """
-        refresh = RefreshToken.for_user(user)
-        return str(refresh.access_token)
     
-
 class ActivationUserConfirmApiView(APIView):
     """
     ActivationUserConfirmApiView handles the confirmation of user account activation through a token-based mechanism.
@@ -199,7 +192,7 @@ class ActivationUserResendApiView(GenericAPIView):
         user_obj = serializer.validated_data['user']
 
         # create jwt token for activation
-        token = generate_activation_token(user_obj)
+        token = LongLivedAccessToken.for_user(user_obj)
 
         # create message for send activation email
         message = EmailMessage(
@@ -230,7 +223,8 @@ class ResetPasswordApiView(GenericAPIView):
         email = serializer.validated_data['email']
         user_obj = serializer.validated_data['user']
 
-        token = generate_password_reset_token(user_obj)
+
+        token = ShortLivedAccessToken.for_user(user_obj)
 
         user_obj.last_password_reset_request = timezone.now()
         user_obj.save()
