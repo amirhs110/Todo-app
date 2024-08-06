@@ -26,38 +26,37 @@ from drf_yasg import openapi
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 
-# schema_view = get_schema_view(
-#    openapi.Info(
-#       title="Todo App",
-#       default_version='v1',
-#       description="This is a project for advanced django course in Maktabkhooneh",
-#       terms_of_service="https://www.google.com/policies/terms/",
-#       contact=openapi.Contact(email="amir.sigari.110@gmail.com"),
-#       license=openapi.License(name="MIT License"),
-#    ),
-#    public=True,
-#    permission_classes=(permissions.AllowAny,),
-# )
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Todo App",
+      default_version='v1',
+      description="This is a project for advanced django course in Maktabkhooneh",
+      terms_of_service="https://www.google.com/policies/terms/",
+      contact=openapi.Contact(email="amir.sigari.110@gmail.com"),
+      license=openapi.License(name="MIT License"),
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path("accounts/", include('django.contrib.auth.urls')),
-    path("accounts/", include('accounts.urls')),
+    path('accounts/', include('accounts.urls')),
     path('', include('task.urls')),
-    path('api-auth/', include('rest_framework.urls')), # If you're intending to use the browsable API you'll probably also want to add REST framework's login and logout views.
     path('api-doc/' , include_docs_urls(title='Api Doc')),
 
     # drf_yasg urls to show api document
-    # path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    # path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    # path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
     # drf_spectacular urls
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    # Optional UI:
-    path('api/schema/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    # path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    # # Optional UI:
+    # path('api/schema/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    # path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
 """ *** Drf_yasg
