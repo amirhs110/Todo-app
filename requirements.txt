@@ -15,3 +15,5 @@ drf-yasg[validation]
 drf-spectacular
 djangorestframework-simplejwt
 django-mail-templated
+pytest
+pytest-django
