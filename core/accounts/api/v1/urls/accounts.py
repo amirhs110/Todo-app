@@ -8,6 +8,7 @@ from ..views import (
     ActivationUserResendApiView,
     ResetPasswordApiView,
     ResetPasswordConfirmApiView,
+    ChangePasswordApiView,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -40,6 +41,8 @@ urlpatterns = [
         # resend-activation
     path('activation/resend/', ActivationUserResendApiView.as_view(), name='activation-resend'),
 
+    # Change Password
+    path("change-password/", ChangePasswordApiView.as_view(), name="change-password"),
 
     # Reset Password
         # reset

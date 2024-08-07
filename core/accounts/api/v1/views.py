@@ -26,6 +26,7 @@ from .serializers import (
     ProfileSerializer,
     ResetPasswordSerializer,
     ResetPasswordConfirmSerializer,
+    ChangePasswordSerializer,
 )
 from django.contrib.auth import get_user_model
 
@@ -284,3 +285,29 @@ class ResetPasswordConfirmApiView(GenericAPIView):
 
         return Response({'detail': 'Password has been reset successfully.'}, status=status.HTTP_200_OK)
 
+
+# Change Password
+class ChangePasswordApiView(GenericAPIView):
+    model = User
+    serializer_class = ChangePasswordSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, queryset=None):
+        obj = self.request.user
+        return obj
+
+    def put(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            self.object.set_password(serializer.validated_data["new_password1"])
+            self.object.save()
+            response = {
+                "status": "success",
+                "message": "Password updated successfully",
+                # 'data': []
+            }
+            return Response(response, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
