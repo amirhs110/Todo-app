@@ -46,8 +46,8 @@ class TaskSerializer(ModelSerializer):
             repo.pop("relative_url")
             repo.pop("absolute_url")
 
-        repo["user"] = {
-            "first name": instance.user.first_name,
-            "last name": instance.user.last_name,
-        }
+        # repo["user"] = {
+        #     "first name": instance.user.first_name,
+        #     "last name": instance.user.last_name,
+        # }
         return repo
