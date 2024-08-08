@@ -15,17 +15,17 @@ from .models import User
 
 class CustomLoginView(LoginView):
     template_name = "registration/login.html"
-    fields = "username","password"
+    fields = "username", "password"
     redirect_authenticated_user = True
 
     def get_success_url(self):
         return reverse_lazy("task:dashboard")
-    
+
 
 class RegisterView(SuccessMessageMixin, CreateView):
-    template_name = 'registration/register.html'
+    template_name = "registration/register.html"
     form_class = CustomUserCreationForm
-    success_url = reverse_lazy('task:dashboard')
+    success_url = reverse_lazy("task:dashboard")
     success_message = "Registration successful. You are now logged in."
 
     def form_valid(self, form):
