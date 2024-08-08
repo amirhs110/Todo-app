@@ -2,6 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 from accounts.models import User, Profile
 from django.urls import reverse
+from task.models import Task
 
 # Create your tests here.
 
@@ -21,15 +22,23 @@ def user_verified():
     return user_obj
 
 @pytest.fixture
-def user_profile(user_common):
+def user_profile(user_verified):
     profile = Profile.objects.create(
-            user= user_common,
+            user= user_verified,
             first_name='test_first_name',
             last_name="test_last_name",
             description = "Hello World",
         )
     return profile
 
+@pytest.fixture
+def task_obj(user_verified):
+    task = Task.objects.create(
+        user = user_verified,
+        title = 'test',
+        content = 'description',
+    )
+    return task
 
 @pytest.mark.django_db
 class TestPostAPi:
@@ -80,3 +89,26 @@ class TestPostAPi:
         # check the response data
         response_json = response.json()
         assert response_json['title'] == ["This field is required."]
+
+    def test_get_task_detail_response_200_status(self,api_client,task_obj, user_verified):
+        """
+        status code 200: get task detail correctly with get request
+        """
+        url = reverse("task:api-v1:task-detail" , kwargs={'pk': task_obj.id})
+        api_client.force_authenticate(user=user_verified)
+        response = api_client.get(url)
+        assert response.status_code == 200
+
+    def test_update_task_detail_response_200_status(self,api_client,task_obj,user_verified):
+        """
+        status code 200: update task detail correctly with Put request
+            because of put request we should sent all data
+        """
+        url = reverse("task:api-v1:task-detail" , kwargs={'pk': task_obj.id})
+        data = {
+            "title" : "test_title",
+            "content" : "description"
+        }
+        api_client.force_authenticate(user=user_verified)
+        response = api_client.put(url,data, format='json')
+        assert response.status_code == 200
