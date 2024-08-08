@@ -49,7 +49,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # path("accounts/", include('django.contrib.auth.urls')),
     path("accounts/", include("accounts.urls")),
-    path("", include("task.urls")),
+    path("task/", include("task.urls")),
     path("api-doc/", include_docs_urls(title="Api Doc")),
     # drf_yasg urls to show api document
     path(

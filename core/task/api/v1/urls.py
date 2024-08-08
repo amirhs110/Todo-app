@@ -2,10 +2,9 @@
 from rest_framework.routers import DefaultRouter
 from .views import TaskViewSets
 
-app_name = "api-v1"
 
 router = DefaultRouter()
-router.register("task", TaskViewSets)
+router.register("", TaskViewSets , basename="task")
 
 urlpatterns = []
 
