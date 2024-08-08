@@ -33,6 +33,11 @@ def user_profile_verified(user_verified):
 
 
 @pytest.fixture
-def jwt_token(user_common):
+def jwt_access_token(user_common):
     refresh = RefreshToken.for_user(user_common)
     return str(refresh.access_token)
+
+@pytest.fixture
+def jwt_refresh_token(user_verified):
+    refresh = RefreshToken.for_user(user_verified)
+    return str(refresh)

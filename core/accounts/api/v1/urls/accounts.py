@@ -25,9 +25,9 @@ urlpatterns = [
     # create
     path("jwt/create/", CustomObtainJwtToken.as_view(), name="jwt-create"),
     # refresh
-    path("jwt/refresh/", TokenRefreshView.as_view(), name="jwt_refresh"),
+    path("jwt/refresh/", TokenRefreshView.as_view(), name="jwt-refresh"),
     # verify
-    path("jwt/verify/", TokenVerifyView.as_view(), name="jwt_verify"),
+    path("jwt/verify/", TokenVerifyView.as_view(), name="jwt-verify"),
     # User Registration & Activation
     # registration
     path("registration/", RegistrationApiView.as_view(), name="registration"),

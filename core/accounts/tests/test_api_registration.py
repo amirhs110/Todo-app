@@ -1,5 +1,5 @@
 import pytest
-from .test_fixture import api_client,user_common,jwt_token
+from .test_fixture import api_client,user_common,jwt_access_token
 from django.urls import reverse
 
 # Registration and Activation user
@@ -27,9 +27,9 @@ class TestAccountsRegistration:
         response = api_client.post(url,data,format='json')
         assert response.status_code == 400
 
-    def test_activation_user_response_200_status(self, api_client, user_common, jwt_token):
+    def test_activation_user_response_200_status(self, api_client, user_common, jwt_access_token):
         # Generate the activation token
-        token = jwt_token
+        token = jwt_access_token
         
         # Generate the URL
         url = reverse('accounts:activation-confirm', kwargs={'token': token})
@@ -48,9 +48,9 @@ class TestAccountsRegistration:
         response_json = response.json()
         assert response_json['detail'] == "Your account has been successfully activated. You can now log in."
 
-    def test_activation_user_invalid_token_response_400_status(self, api_client, user_common, jwt_token):
+    def test_activation_user_invalid_token_response_400_status(self, api_client, user_common, jwt_access_token):
         # Generate the activation token
-        token = jwt_token
+        token = jwt_access_token
         
         # Generate the URL
         url = reverse('accounts:activation-confirm', kwargs={'token': None})

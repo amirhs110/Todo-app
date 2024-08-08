@@ -1,5 +1,5 @@
 import pytest
-from .test_fixture import api_client,user_common,user_verified,jwt_token
+from .test_fixture import api_client,user_common,user_verified
 from django.urls import reverse
 
 # login Token based Authentication
