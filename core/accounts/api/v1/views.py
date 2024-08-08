@@ -10,7 +10,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from accounts.models import Profile
-from rest_framework_simplejwt.tokens import RefreshToken
 from mail_templated import EmailMessage
 from django.shortcuts import get_object_or_404
 from ..utils import EmailThreading
@@ -19,7 +18,6 @@ import jwt
 from jwt.exceptions import ExpiredSignatureError, DecodeError
 from ..jwt_utils import (
     ShortLivedAccessToken,
-    MediumLivedAccessToken,
     LongLivedAccessToken,
 )
 from .serializers import (
@@ -167,7 +165,7 @@ class ActivationUserConfirmApiView(APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        except Exception as e:
+        except Exception:
             return Response(
                 {"error": _("An unexpected error occurred. Please try again later.")},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -300,7 +298,7 @@ class ResetPasswordConfirmApiView(GenericAPIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        except Exception as e:
+        except Exception:
             return Response(
                 {"error": _("An unexpected error occurred. Please try again later.")},
                 status=status.HTTP_400_BAD_REQUEST,

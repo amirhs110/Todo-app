@@ -48,7 +48,7 @@ class TaskViewSets(ModelViewSet):
             return Response({"Status": "Done", "detail": {}})
 
         task = get_object_or_404(Task, pk=pk, user=request.user)
-        if task.complete == False:
+        if not task.complete:
             task.complete = True
             task.save()
             status = "Done"

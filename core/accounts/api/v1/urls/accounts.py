@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from ..views import (
     CustomObtainAuthToken,
     CustomDiscardAuthToken,
@@ -11,7 +11,6 @@ from ..views import (
     ChangePasswordApiView,
 )
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
     TokenRefreshView,
     TokenVerifyView,
 )
