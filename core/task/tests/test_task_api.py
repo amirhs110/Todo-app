@@ -112,3 +112,25 @@ class TestPostAPi:
         api_client.force_authenticate(user=user_verified)
         response = api_client.put(url,data, format='json')
         assert response.status_code == 200
+
+    def test_delete_task_detail_response_204_status(self,api_client,task_obj,user_verified):
+        """
+        status code 204: Successful Request: The 204 No Content
+            delete task by get id
+        """
+        url = reverse("task:api-v1:task-detail" , kwargs={'pk': task_obj.id})
+        api_client.force_authenticate(user=user_verified)
+        response = api_client.delete(url)
+        assert response.status_code == 204
+
+    def test_get_done_task_response_200_status(self,api_client,task_obj,user_verified):
+        """
+        status code 200: Successful Request
+            task.complete set True
+        """
+        url = reverse("task:api-v1:task-get-done" , kwargs={'pk': task_obj.id})
+        api_client.force_authenticate(user=user_verified)
+        response = api_client.get(url)
+        assert response.status_code == 200
+        response_json = response.json()
+        assert response_json['status'] == "Done"

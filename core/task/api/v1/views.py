@@ -57,7 +57,7 @@ class TaskViewSets(ModelViewSet):
         serializer = TaskSerializer(instance=task, context={"request": request})
         return Response(
             {
-                "Status": status,
+                "status": status,
                 "detail": serializer.data,
             }
         )
