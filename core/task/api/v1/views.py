@@ -10,12 +10,12 @@ from django.shortcuts import get_object_or_404
 from task.models import Task
 from .serializers import TaskSerializer
 from .paginations import TaskPagination
-
+from .permissions import IsVerifiedUser
 
 class TaskViewSets(ModelViewSet):
     queryset = Task.objects.all().order_by("-created_date")
     serializer_class = TaskSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsVerifiedUser]
     pagination_class = TaskPagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["complete"]
