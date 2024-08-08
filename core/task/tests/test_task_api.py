@@ -64,3 +64,19 @@ class TestPostAPi:
         api_client.force_authenticate(user=user_verified)
         response = api_client.post(url,data, format='json')
         assert response.status_code == 201
+
+    def test_create_task_response_400_status(self,api_client,user_verified):
+        """
+        status code 400: Don't create task
+            because we send authenticated user but with wrong task data 
+        """
+        url = reverse("task:api-v1:task-list")
+        data = {
+            "content" : "description"
+        }
+        api_client.force_authenticate(user=user_verified)
+        response = api_client.post(url,data, format='json')
+        assert response.status_code == 400
+        # check the response data
+        response_json = response.json()
+        assert response_json['title'] == ["This field is required."]
