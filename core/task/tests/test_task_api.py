@@ -1,6 +1,6 @@
 import pytest
 from rest_framework.test import APIClient
-from accounts.models import User, Profile
+from accounts.models import User
 from django.urls import reverse
 from task.models import Task
 
@@ -20,16 +20,6 @@ def user_common():
 def user_verified():
     user_obj = User.objects.create_user(email="test@test.com",password="123456@mir", is_verified=True)
     return user_obj
-
-@pytest.fixture
-def user_profile(user_verified):
-    profile = Profile.objects.create(
-            user= user_verified,
-            first_name='test_first_name',
-            last_name="test_last_name",
-            description = "Hello World",
-        )
-    return profile
 
 @pytest.fixture
 def task_obj(user_verified):

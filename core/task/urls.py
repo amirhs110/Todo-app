@@ -29,5 +29,5 @@ urlpatterns = [
         name="detail-delete",
     ),
     path("task/done/<int:pk>/", TaskDoneView.as_view(), name="done"),
-    path("api/v1/", include("task.api.v1.urls")),
+    path("task/api/v1/", include("task.api.v1.urls")),
 ]
