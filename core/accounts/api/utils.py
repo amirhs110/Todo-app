@@ -1,13 +1,8 @@
-from collections.abc import Callable
 import threading
-from typing import Any, Iterable, Mapping
 import logging
-from datetime import timedelta
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from django.conf import settings
-from django.utils import timezone
 
 logger = logging.getLogger(__name__)
+
 
 class EmailThreading(threading.Thread):
     def __init__(self, email_message):
@@ -19,6 +14,7 @@ class EmailThreading(threading.Thread):
             self.email_message.send()
         except Exception as e:
             logger.error(f"Failed to send email: {e}")
+
 
 # class CustomAccessToken(AccessToken):
 #     """

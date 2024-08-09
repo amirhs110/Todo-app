@@ -15,5 +15,11 @@ drf-yasg[validation]
 drf-spectacular
 djangorestframework-simplejwt
 django-mail-templated
+
+# Testing
 pytest
 pytest-django
+
+# Reformatting
+black
+flake8

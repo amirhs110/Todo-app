@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User, Profile
-from .forms import CustomUserChangeForm,CustomUserCreationForm
+from .forms import CustomUserChangeForm, CustomUserCreationForm
+
 
 # Register your models here.
 class ProfileInline(admin.StackedInline):
@@ -21,7 +22,7 @@ class ProfileInline(admin.StackedInline):
     def get_queryset(self, request):
         """
         Filters the profile queryset to include only the profile related to the current user.
-        
+
         """
         qs = super().get_queryset(request)
         # Filter the profile queryset to include only the related profile
@@ -33,37 +34,43 @@ class ProfileInline(admin.StackedInline):
         self.parent_obj = obj
         return super().get_formset(request, obj, **kwargs)
 
+
 class CustomUserAdmin(UserAdmin):
-    model=User
+    model = User
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
 
-    list_display=('email', 'is_superuser' , 'is_active', 'is_verified')
-    list_filter=('is_superuser' , 'is_active','is_verified')
-    search_fields=('email',)
-    ordering=('-created_date',)
+    list_display = ("email", "is_superuser", "is_active", "is_verified")
+    list_filter = ("is_superuser", "is_active", "is_verified")
+    search_fields = ("email",)
+    ordering = ("-created_date",)
 
     fieldsets = (
-        ("Authentication", {
-            "fields": ("email", "password")}),
-
-        ("Permissions", {
-            "fields": ("is_superuser", "is_active", 'is_verified')}),
-
-        ("Group Permissions", {
-            "classes": ["collapse"],
-            "fields": ("groups", "user_permissions",)}),
-
-        ("Login Date", {
-            "fields": ("last_login",)}),
+        ("Authentication", {"fields": ("email", "password")}),
+        ("Permissions", {"fields": ("is_superuser", "is_active", "is_verified")}),
+        (
+            "Group Permissions",
+            {
+                "classes": ["collapse"],
+                "fields": (
+                    "groups",
+                    "user_permissions",
+                ),
+            },
+        ),
+        ("Login Date", {"fields": ("last_login",)}),
     )
 
     add_fieldsets = (
-        ("Authentication", {"classes": ("wide",), "fields": ("email", "password1", "password2")}),
+        (
+            "Authentication",
+            {"classes": ("wide",), "fields": ("email", "password1", "password2")},
+        ),
         ("Permissions", {"fields": ("is_superuser", "is_active", "is_verified")}),
     )
 
     inlines = (ProfileInline,)
 
-admin.site.register(User,CustomUserAdmin)
+
+admin.site.register(User, CustomUserAdmin)
 admin.site.register(Profile)
