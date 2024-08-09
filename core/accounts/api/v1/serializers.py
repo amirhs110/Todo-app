@@ -158,8 +158,7 @@ class ResetPasswordSerializer(serializers.Serializer):
         cooldown_period = timedelta(minutes=10)  # cooldown period
 
         if (
-            user_obj.last_password_reset_request
-            and timezone.now() - user_obj.last_password_reset_request < cooldown_period
+            user_obj.last_password_reset_request and timezone.now() - user_obj.last_password_reset_request < cooldown_period
         ):
             raise serializers.ValidationError(
                 _("You can only request a password reset once every 10 minutes.")
