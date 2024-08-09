@@ -13,10 +13,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup Docker-Compose
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    - name: Set up Docker Compose
       run: docker-compose up -d
-    - name: Run Flake8
-      run: docker exec backend sh -c "flake8 ."
-    - name: Run Pytest
-      run: docker exec backend sh -c "pytest ."
+
+    - name: Run Migrations
+      run: docker exec backend sh -c "python manage.py migrate"
+
+    - name: Run Tests
+      run: docker exec backend sh -c "flake8 && pytest ."
