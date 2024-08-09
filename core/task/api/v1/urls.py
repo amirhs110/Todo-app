@@ -6,7 +6,7 @@ app_name = "api-v1"
 
 
 router = DefaultRouter()
-router.register("", TaskViewSets , basename="task")
+router.register("", TaskViewSets, basename="task")
 
 urlpatterns = []
 

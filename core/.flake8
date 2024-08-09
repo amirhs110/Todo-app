@@ -14,5 +14,6 @@ exclude =
     settings.py,
     __init__.py,
     tests.py,
+    tests,
 
 ignore = E501

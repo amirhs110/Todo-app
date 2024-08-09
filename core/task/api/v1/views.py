@@ -12,6 +12,7 @@ from .serializers import TaskSerializer
 from .paginations import TaskPagination
 from .permissions import IsVerifiedUser
 
+
 class TaskViewSets(ModelViewSet):
     queryset = Task.objects.all().order_by("-created_date")
     serializer_class = TaskSerializer
