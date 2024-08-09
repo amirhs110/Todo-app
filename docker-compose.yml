@@ -7,9 +7,8 @@ services:
       - ./core:/app
     ports:
       - "8000:8000"
-    environment:
-      - SECRET_KEY=django-insecure-lk8vq$^%u0s8s#w2y5uz49&kldkcao=s5ynn)!5znbca7h
-      - DEBUG=TRUE
+    env_file:
+      - .env 
       
   smtp4dev:
     image: rnwood/smtp4dev:v3
