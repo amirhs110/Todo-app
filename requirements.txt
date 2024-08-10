@@ -23,3 +23,6 @@ pytest-django
 # Reformatting
 black
 flake8
+
+# add fake data
+Faker
