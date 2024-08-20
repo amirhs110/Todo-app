@@ -12,6 +12,9 @@ from django.views.generic import (
 )
 from .models import Task
 from django.contrib.auth.mixins import LoginRequiredMixin
+from time import sleep
+from django.http import HttpResponse
+# from .tasks import send_email_celery
 
 
 # Create your views here.
@@ -81,3 +84,9 @@ class TaskDoneView(LoginRequiredMixin, View):
             obj.complete = True
         obj.save()
         return redirect(self.success_url)
+
+
+# This is a test view
+def send_email_celery(request):
+    sleep(5)
+    return HttpResponse('Ok')

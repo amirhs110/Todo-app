@@ -9,6 +9,7 @@ from .views import (
     TaskDoneView,
     TaskDetailEditView,
     TaskDetailDeleteView,
+    send_email_celery,
 )
 
 app_name = "task"
@@ -30,4 +31,6 @@ urlpatterns = [
     ),
     path("task/done/<int:pk>/", TaskDoneView.as_view(), name="done"),
     path("task/api/v1/", include("task.api.v1.urls")),
+    # a test url for testing celery
+    path('test/', send_email_celery),
 ]
