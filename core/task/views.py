@@ -14,7 +14,7 @@ from .models import Task
 from django.contrib.auth.mixins import LoginRequiredMixin
 from time import sleep
 from django.http import HttpResponse
-# from .tasks import send_email_celery
+from .tasks import send_email_celery
 
 
 # Create your views here.
@@ -87,6 +87,6 @@ class TaskDoneView(LoginRequiredMixin, View):
 
 
 # This is a test view
-def send_email_celery(request):
-    sleep(5)
+def send_email(request):
+    send_email_celery.delay()
     return HttpResponse('Ok')
