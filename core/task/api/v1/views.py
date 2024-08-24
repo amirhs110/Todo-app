@@ -12,7 +12,10 @@ from task.models import Task
 from .serializers import TaskSerializer
 from .paginations import TaskPagination
 from .permissions import IsVerifiedUser
-
+import requests
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
 
 class TaskViewSets(ModelViewSet):
     queryset = Task.objects.all().order_by("-created_date")
@@ -63,3 +66,40 @@ class TaskViewSets(ModelViewSet):
                 "detail": serializer.data,
             }
         )
+
+
+@api_view(['get'])
+def get_weather_data(request):
+    # required data
+    city = "Tehran"
+    api_key = "d362f41af4f139e1fc31e4c1688f7b16"
+    # get city data by Direct geocoding api
+    api_get_city = f"http://api.openweathermap.org/geo/1.0/direct?q={city}&appid={api_key}"
+    city_data = requests.get(api_get_city).json()
+    lat = city_data[0]['lat']
+    lon = city_data[0]['lon']
+    # get weather data
+    api_weather = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric&lang=fa"
+    weather_data = requests.get(api_weather).json()
+
+    if weather_data.get("cod") != 200:
+        return Response({"error": "Failed to retrieve weather data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    # Customize the response data
+    customized_response = {
+        'location': {
+            'city': city_data[0]['name'],
+            'country': city_data[0]['country']
+        },
+        'weather': {
+            'temperature': weather_data['main']['temp'],  # Temperature in Celsius
+            'min-temperature': weather_data['main']['temp_min'],  # Min temperature in Celsius
+            'max-temperature': weather_data['main']['temp_max'],  # Max temperature in Celsius
+            'description': weather_data['weather'][0]['description'],  # Weather description
+            'wind_speed': weather_data['wind']['speed'],  # Wind speed in meters/second
+            'humidity': weather_data['main']['humidity'],  # Humidity in percentage
+            'pressure': weather_data['main']['pressure'],  # Atmospheric pressure in hPa
+        }
+    }
+
+    return Response(customized_response, status=status.HTTP_200_OK)
