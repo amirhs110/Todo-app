@@ -9,7 +9,7 @@ router = DefaultRouter()
 router.register("", TaskViewSets, basename="task")
 
 urlpatterns = [
-    path('weather-data/', get_weather_data )
+    path('weather-data/', get_weather_data , name='weather-data')
 ]
 
 
