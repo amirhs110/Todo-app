@@ -16,6 +16,8 @@ import requests
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 class TaskViewSets(ModelViewSet):
     queryset = Task.objects.all().order_by("-created_date")
@@ -68,7 +70,8 @@ class TaskViewSets(ModelViewSet):
         )
 
 
-@api_view(['get'])
+@cache_page(60 * 20)  # cache for 20 min
+@api_view(['GET'])
 def get_weather_data(request):
     # required data
     city = "Tehran"
