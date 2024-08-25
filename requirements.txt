@@ -16,6 +16,9 @@ drf-spectacular
 djangorestframework-simplejwt
 django-mail-templated
 
+# postgresql database
+psycopg2-binary
+
 # Testing
 pytest
 pytest-django
