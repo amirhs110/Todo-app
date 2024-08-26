@@ -25,7 +25,7 @@ services:
     command: sh -c "python manage.py makemigrations &&
                     python manage.py migrate &&
                     python manage.py initiate_admin &&
-                    python manage.py runserver 0.0.0.0:8000"
+                    gunicorn core.wsgi --bind 0.0.0.0:8000"
     volumes:
       - ./core:/app
     expose:
@@ -49,6 +49,15 @@ services:
       - redis
       - backend
 
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - redis
+      - backend
 
 volumes:
   postgres_data:

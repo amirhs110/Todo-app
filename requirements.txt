@@ -34,3 +34,6 @@ Faker
 redis
 celery
 django-redis
+
+# deployment
+gunicorn
